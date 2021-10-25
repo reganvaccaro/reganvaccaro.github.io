@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Bad Football - Regan Vaccaro&#39;s GitHub Site</title>
+<meta property="og:title" content="Bad Football - Regan Vaccaro&#39;s GitHub Site">
+
+
+  <link href='http://reganvaccaro.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/reganvaccaro">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/regan_vaccaro">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">Bad Football</h1>
+
+    
+    <span class="article-date">2021-10-24</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://reganvaccaro.github.io/2021/10/24/bad-football/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>I’m going to do my homework.</p>
+<pre class="r"><code>library(reactable)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
+## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+## ✓ readr   2.0.1     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<p>For this I will look at bad football.</p>
+<pre class="r"><code>badfootball &lt;- read_csv(&quot;badfootballlogs19.csv&quot;)</code></pre>
+<pre><code>## Rows: 1662 Columns: 51</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (8): Date, HomeAway, Opponent, Result, TeamFull, TeamURL, Team, Conference
+## dbl (43): Game, PassingCmp, PassingAtt, PassingPct, PassingYds, PassingTD, R...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>First, I separated the data into two columns, W and L, or “wins” and “losses”.</p>
+<pre class="r"><code>badfootball %&gt;%
+ separate(Result, into=c(&quot;Result&quot;, &quot;Outcome&quot;), sep=&quot;\\(&quot;) %&gt;%
+ head()</code></pre>
+<pre><code>## # A tibble: 6 × 52
+##    Game Date    HomeAway Opponent Result Outcome PassingCmp PassingAtt PassingPct
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1     1 8/24/19 N        Miami (… &quot;W &quot;   24-20)          17         27       63  
+## 2     2 9/7/19  &lt;NA&gt;     Tenness… &quot;W &quot;   45-0)           30         36       83.3
+## 3     3 9/14/19 @        Kentucky &quot;W &quot;   29-21)          21         30       70  
+## 4     4 9/21/19 &lt;NA&gt;     Tenness… &quot;W &quot;   34-3)           24         34       70.6
+## 5     5 9/28/19 &lt;NA&gt;     Towson   &quot;W &quot;   38-0)           24         28       85.7
+## 6     6 10/5/19 &lt;NA&gt;     Auburn   &quot;W &quot;   24-13)          25         39       64.1
+## # … with 43 more variables: PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;,
+## #   RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;,
+## #   OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;,
+## #   FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;,
+## #   FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;,
+## #   Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;,
+## #   DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, DefPassingPct &lt;dbl&gt;, …</code></pre>
+<p>Then, I removed the close parentheses from the data by cleaning up the text using gsub.</p>
+<pre class="r"><code>badfootball %&gt;%
+ separate(Result, into=c(&quot;Result&quot;, &quot;Outcome&quot;), sep=&quot;\\(&quot;) %&gt;%
+ head() %&gt;%
+ mutate(Outcome=gsub(&quot;\\)&quot;,&quot;&quot;,Outcome)) %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 × 52
+##    Game Date    HomeAway Opponent Result Outcome PassingCmp PassingAtt PassingPct
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1     1 8/24/19 N        Miami (… &quot;W &quot;   24-20           17         27       63  
+## 2     2 9/7/19  &lt;NA&gt;     Tenness… &quot;W &quot;   45-0            30         36       83.3
+## 3     3 9/14/19 @        Kentucky &quot;W &quot;   29-21           21         30       70  
+## 4     4 9/21/19 &lt;NA&gt;     Tenness… &quot;W &quot;   34-3            24         34       70.6
+## 5     5 9/28/19 &lt;NA&gt;     Towson   &quot;W &quot;   38-0            24         28       85.7
+## 6     6 10/5/19 &lt;NA&gt;     Auburn   &quot;W &quot;   24-13           25         39       64.1
+## # … with 43 more variables: PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;,
+## #   RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;,
+## #   OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;,
+## #   FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;,
+## #   FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;,
+## #   Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;,
+## #   DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, DefPassingPct &lt;dbl&gt;, …</code></pre>
+<p>Here, I separated the team score and opponent score.</p>
+<pre class="r"><code>badfootball %&gt;%
+ separate(Result, into=c(&quot;Result&quot;, &quot;Outcome&quot;), sep=&quot;\\ &quot;) %&gt;%
+ head() %&gt;%
+mutate(Outcome=gsub(&quot;\\)&quot;,&quot;&quot;,Outcome)) %&gt;%
+ separate(Outcome, into=c(&quot;TeamScore&quot;, &quot;OpponentScore&quot;), sep=&quot;-&quot;)</code></pre>
+<pre><code>## # A tibble: 6 × 53
+##    Game Date    HomeAway Opponent         Result TeamScore OpponentScore PassingCmp
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              &lt;dbl&gt;
+## 1     1 8/24/19 N        Miami (FL)       W      (24       20                    17
+## 2     2 9/7/19  &lt;NA&gt;     Tennessee-Martin W      (45       0                     30
+## 3     3 9/14/19 @        Kentucky         W      (29       21                    21
+## 4     4 9/21/19 &lt;NA&gt;     Tennessee        W      (34       3                     24
+## 5     5 9/28/19 &lt;NA&gt;     Towson           W      (38       0                     24
+## 6     6 10/5/19 &lt;NA&gt;     Auburn           W      (24       13                    25
+## # … with 45 more variables: PassingAtt &lt;dbl&gt;, PassingPct &lt;dbl&gt;,
+## #   PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;, RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;,
+## #   RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;, OffensivePlays &lt;dbl&gt;,
+## #   OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;, FirstDownPass &lt;dbl&gt;,
+## #   FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;, FirstDownTotal &lt;dbl&gt;,
+## #   Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;, Interceptions &lt;dbl&gt;,
+## #   TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;, DefPassingCmp &lt;dbl&gt;, …</code></pre>
+<p>Now, I mutated a new field called the differential which was TeamScore minus OpponentScore. I used the function as.numeric to show the data in numeric form.</p>
+<pre class="r"><code>badfootball %&gt;% 
+  separate(Result, into=c(&quot;Result&quot;, &quot;Outcome&quot;), sep=&quot;\\(&quot;) %&gt;% 
+  mutate(Outcome=gsub(&quot;)&quot;, &quot;&quot;, Outcome)) %&gt;% 
+  separate(Outcome, into=c(&quot;TeamScore&quot;, &quot;OpponentScore&quot;), sep=&quot;-&quot;) %&gt;% 
+  mutate(TeamScore = as.numeric(TeamScore), OpponentScore = as.numeric(OpponentScore)) %&gt;%
+  mutate(Differential = TeamScore - OpponentScore) -&gt; bad</code></pre>
+<p>I named a new dataframe called worstgames. This showed the the games that had a differential of over 65 points.</p>
+<pre class="r"><code>bad %&gt;% mutate(Differential = (TeamScore-OpponentScore)) %&gt;% filter(Differential &gt; 65) -&gt; worstgames</code></pre>
+<p>Next, I created a scatterplot from the data at hand. For the worst games, I made them red to have them stand out from the rest of the data.</p>
+<pre class="r"><code>ggplot() + geom_point(data=bad, aes(x=TeamScore, y=OpponentScore), color=&quot;grey&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;)</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/10/24/bad-football/index_files/figure-html/unnamed-chunk-8-1.png" width="672" />
+Here,I had to install ggalt since that is the library that encircle runs through.</p>
+<pre class="r"><code>library(ggalt)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<p>Here, I circled the “Bad Games” that we looked at in the scatterplot using geom_encircle. I circled the points in the color “chartreuse” so that it would stand out.</p>
+<pre class="r"><code>ggplot() + geom_point(data=bad, aes(x=TeamScore, y=OpponentScore), color=&quot;grey&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +
+  geom_encircle(data=worstgames, aes(x=TeamScore, y=OpponentScore), s_shape=.1, expand=.06, colour=&quot;chartreuse&quot;) +
+  labs(title=&quot;Worst College Football Games&quot;, subtitle=&quot;Teams that lost by more than 65 points last season&quot;, caption=&quot;Source: Sports Reference | Chart by Regan Vaccaro&quot;) + theme_minimal()  </code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/10/24/bad-football/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
