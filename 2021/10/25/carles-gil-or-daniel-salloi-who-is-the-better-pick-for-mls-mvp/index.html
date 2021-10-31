@@ -180,22 +180,32 @@ With this data, it is pretty apparent that both Dániel Sallói and Carles Gil a
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <p>The stats that I decided to take a deeper look at are; goals, assists, touches, progressive passes, progressive carries, and successful dribbles. I will make a bump chart for each different statistic that has a line for each player. The line shows the statistic and where it aligns to each game for the season. I can see consistency, improvement, or even lack of success in terms of each statistic.</p>
-<pre class="r"><code>bump1 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Gls, color=Player))+
+<pre class="r"><code>bump1 &lt;- ggplot() +
+  geom_bump(data=mvp, aes(x=Game, y=Gls, color=Player))+
   theme_cowplot()+
-  labs(title=&quot;Impact Is Key&quot;, subtitle=&quot;Is Salloi&#39;s consistency enough to take the spot, or is Gil&#39;s talent enough to out-do?&quot;,y=&quot;Goals&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
-<pre class="r"><code>bump2 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Ast, color=Player))+
+  labs(title=&quot;Impact Is Key&quot;, 
+       subtitle=&quot;Is Salloi&#39;s consistency enough to take the spot, or is Gil&#39;s talent enough to out-do?&quot;,
+       y=&quot;Goals&quot;,
+       color=&quot;&quot;,
+       x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump2 &lt;- ggplot() +
+  geom_bump(data=mvp, aes(x=Game, y=Ast, color=Player))+
   theme_cowplot()+
   labs(y=&quot;Assists&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
-<pre class="r"><code>bump3 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Touches, color=Player))+
+<pre class="r"><code>bump3 &lt;- ggplot() +
+  geom_bump(data=mvp, aes(x=Game, y=Touches, color=Player))+
   theme_cowplot()+
   labs(color=&quot;&quot;,x=&quot;&quot;)</code></pre>
-<pre class="r"><code>bump4 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=ProgPasses, color=Player))+
+<pre class="r"><code>bump4 &lt;- ggplot() + 
+  geom_bump(data=mvp, aes(x=Game, y=ProgPasses, color=Player))+
   theme_cowplot()+
   labs(y=&quot;Progressive Passes&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
-<pre class="r"><code>bump5 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=ProgCarries, color=Player))+
+<pre class="r"><code>bump5 &lt;- ggplot() + 
+  geom_bump(data=mvp, aes(x=Game, y=ProgCarries, color=Player))+
   theme_cowplot()+
   labs(y=&quot;Progressive Carries&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
-<pre class="r"><code>bump6&lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=SuccDribb, color=Player))+
+<pre class="r"><code>bump6&lt;- ggplot() + 
+  geom_bump(data=mvp, aes(x=Game, y=SuccDribb, color=Player))+
   theme_cowplot()+
   labs(caption=&quot;Source: FBref.com | By Regan Vaccaro&quot;,y=&quot;Successful Dribbles&quot;,color=&quot;&quot;)</code></pre>
 <p>To see each bump chart next to each other, I placed it within a grid.</p>
