@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Carles Gil or Daniel Salloi : Who is the better pick for MLS MVP? - Regan Vaccaro&#39;s GitHub Site</title>
+<meta property="og:title" content="Carles Gil or Daniel Salloi : Who is the better pick for MLS MVP? - Regan Vaccaro&#39;s GitHub Site">
+
+
+  <link href='http://reganvaccaro.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/reganvaccaro">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/regan_vaccaro">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">9 min read</span>
+    
+
+    <h1 class="article-title">Carles Gil or Daniel Salloi : Who is the better pick for MLS MVP?</h1>
+
+    
+    <span class="article-date">2021-10-25</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://reganvaccaro.github.io/2021/10/25/carles-gil-or-daniel-salloi-who-is-the-better-pick-for-mls-mvp/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Dániel Sallói and Carles Gil are two players that have undoubtedly made a sizable impact on their programs since their start. With Sallói coming into Sporting Kansas City at just 20 years old in 2016, and Gil arriving at the New England Revolution in 2019, both have made their way to the leader boards. Playing at a striker position for much of his career with KC, Sallói has scored a total of 34 goals with the team with 16 of those being game-winning goals. Gil,on the other hand, has scored 16 goals over his time with the Revolution with 6 game-winners.</p>
+<p>2021 has been no different in terms of the quality of soccer being played by these guys. Their talents haven’t gone unnoticed in 2021 as both of their names have been consistently thrown out as contenders for MVP. But what differentiates the two?</p>
+<p>Let’s look at some statistics to find out.</p>
+<pre class="r"><code>library(tidyverse)
+library(cowplot)
+library(ggrepel)
+library(ggalt)
+library(ggbump)</code></pre>
+<pre class="r"><code>mlsplayers &lt;- read_csv(&quot;mls2021.csv&quot;)</code></pre>
+<pre><code>## Rows: 735 Columns: 33</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (6): Player, Nation, Pos, Squad, Age, Matches
+## dbl (27): Rk, Born, MP, Starts, Min, 90s, Gls, Ast, G-PK, PK, PKatt, CrdY, C...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Here I uploaded a csv file that contains every individual player’s statistics for the MLS in the 2021 season thus far. This data came from the website called FBref.com.</p>
+<p>First, I want to keep it simple by looking at the point contributions of Sallói and Gil and compare them. By point contributions, I mean goals and assists to another player who ended up scoring a goal. These point contributions directly aided to the potential of their teams winning games.</p>
+<p>With there being 735 players in the MLS and us only needing to look at 2 of them, I am also going to have to create a data frame that filters out the rest of the players. I will call this whole data frame “scores”.</p>
+<pre class="r"><code>mlsplayers %&gt;%
+  mutate(Player=gsub(&quot;\\\\.*&quot;,&quot;&quot;,Player)) %&gt;%
+  filter(Player == &quot;Carles Gil&quot; | Player == &quot;Dániel Sallói&quot;) %&gt;%
+  select(Player, Gls, Ast) %&gt;%
+  pivot_longer(cols=c(Gls, Ast), names_to=&quot;Type&quot;, values_to=&quot;Stat&quot;) -&gt; scores</code></pre>
+<p>Next, I think it would be even more helpful to look at the EXPECTED goals and assists from these players. Expected goals and assists are based on a calculation that compares thousands of shots recorded previously based on factors such as distance to goal, angle, body part, and even type of play.</p>
+<p>I will create another data frame, but this time for expected goals and assists. I’ll call this one “xscores”.</p>
+<pre class="r"><code>mlsplayers %&gt;%
+  mutate(Player=gsub(&quot;\\\\.*&quot;,&quot;&quot;,Player)) %&gt;%
+  filter(Player == &quot;Carles Gil&quot; | Player == &quot;Dániel Sallói&quot;) %&gt;%
+  select(Player, xG, xA) %&gt;%
+  pivot_longer(cols=c(xG, xA), names_to=&quot;Type&quot;, values_to=&quot;Stat&quot;) -&gt; xscores</code></pre>
+<p>A bar graph seems like a great way to look at this type of data, so I will create one for our “scores” data and our “xscores” data. To then compare the actual and expected with each other, I will create something called a cowplot that will place our data side by side so that we can analyze it.</p>
+<pre class="r"><code>bar1 &lt;- ggplot(scores, aes(x=Player, weight=Stat, fill=Type)) +
+  geom_bar() +
+  coord_flip() +
+  labs(x=&quot;&quot;, y=&quot;Point Contributions&quot;,
+       title=&quot;Let&#39;s compare ACTUAL point contributions from our players&quot;,
+       subtitle=&quot;Sallói has outperformed Gil in terms of goals + assists for his team this season.&quot;,
+       caption=&quot;Source: FBref.com | By Regan Vaccaro&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=10),
+    panel.grid.minor = element_blank(),
+    )</code></pre>
+<pre class="r"><code>bar2 &lt;- ggplot(xscores, aes(x=Player, weight=Stat, fill=Type)) +
+  geom_bar() +
+  coord_flip() +
+  labs(x=&quot;&quot;, y=&quot;Point Contributions&quot;,
+       title=&quot;.... and their EXPECTED point contributions.&quot;,
+       subtitle=&quot;Data shows that Gil should be the one outperforming Sallói, contrary to reality.&quot;,
+       caption=&quot;Source: FBref.com | By Regan Vaccaro&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=10),
+    panel.grid.minor = element_blank() 
+    )</code></pre>
+<pre class="r"><code>plot_grid(bar1, bar2, ncol=1)</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/10/25/carles-gil-or-daniel-salloi-who-is-the-better-pick-for-mls-mvp/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>From this data, it looks like Sallói has almost triple the amount of Goals as Gil, but Gil has many more assists than Sallói. One may be able to attribute this stat to the difference in the position that they play. Sallói, a striker/forward, plays in a position that lends itself to many goal scoring opportunities and many less in terms of passing opportunities that may lead to assists. Gil, however, plays attacking midfield where the name of the game is passing. Goal scoring opportunities may present themselves less in this position which can make any goal more impressive and significant than one score by a forward.</p>
+<p>However, we can debunk this idea when looking at Gil’s expected goals scored. Carles Gil is under-performing in terms of goals and assists this season as his expected goals and assists have him with more expected point contributions than he has been able to contribute this season. Sallói on the other hand has completely out-done his expected numbers by beating it in terms of goals and assists by roughly 50%.</p>
+<p>Although not the only statistic that matters, this data on point contributions from our players puts Sallói out on top.</p>
+<p>Now, I want to see how consistent Carles Gil and Dániel Sallói have been over the season. A full soccer game is 90 minutes long. To look at consistency, I need to see where the players lie within amount of full games played compared to their average point contributions per game.</p>
+<p>I will create a data frame that selects each player in the MLS as well as their average goals and assists per 90 minutes and their amount of full 90s played. I will also need to create a second one with the same stats but with Gil and Sallói filtered out.</p>
+<pre class="r"><code>ninetymingame &lt;-mlsplayers %&gt;%
+  mutate(Player=gsub(&quot;\\\\.*&quot;,&quot;&quot;,Player)) %&gt;%
+  select(Player, `G+APer90`, `90s`)</code></pre>
+<pre class="r"><code>ourplayers &lt;-mlsplayers %&gt;%
+  mutate(Player=gsub(&quot;\\\\.*&quot;,&quot;&quot;,Player)) %&gt;%
+  filter(Player == &quot;Carles Gil&quot; | Player == &quot;Dániel Sallói&quot;) %&gt;%
+  select(Player, `G+APer90`, `90s`)</code></pre>
+<p>The best way to look at this data is on a scatter plot because it will show all players as individual points on a graph. The further down the x axis, the more full games that a player played. The further up on the y axis, the higher the player is in terms of average goals and assists per game.</p>
+<pre class="r"><code>ggplot() + geom_point(data=ninetymingame, aes(x=`90s`, y=`G+APer90`), color=&quot;turquoise&quot;) +
+  geom_point(data=ourplayers, aes(x=`90s`, y=`G+APer90`), color=&quot;red&quot;) +
+  geom_encircle(data=ourplayers,aes(x=`90s`, y=`G+APer90`), s_shape=.1, expand=.05, colour=&quot;red&quot;)+
+  geom_text_repel(data=ourplayers, aes(x=`90s`, y=`G+APer90`, label=Player),size = 4, color=&quot;blue&quot;,) +
+  labs(title=&quot;Consistency and Quantity Matter&quot;, 
+       subtitle=&quot;Salloi contributes more points per 90 whilst also playing more full games than Gil.&quot;, 
+       x=&quot;Total 90s Played&quot;,
+       y=&quot;Average Goals + Assists Per 90&quot;, 
+       caption=&quot;Source: FBref.com | By Regan Vaccaro&quot;)+
+  theme_minimal() +
+  theme(
+  plot.title = element_text(size=14, face = &quot;bold&quot;), 
+  axis.title = element_text(size = 8),
+  plot.subtitle = element_text(size = 10),
+  panel.grid.minor = element_blank())</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/10/25/carles-gil-or-daniel-salloi-who-is-the-better-pick-for-mls-mvp/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+With this data, it is pretty apparent that both Dániel Sallói and Carles Gil are very consistent players. Both fall very far down each axis and have played very many full games as well as having a high average per each game. In terms of comparison, Dániel Sallói comes out on top again for this one. He is a more consistent player in terms of playing more games for his team than Gil and having a higher point contribution average per each game played. His ability to have consistent contributions for his team’s success puts him in a great place as a contender for MVP this year.</p>
+<p>Now that we have looked at consistency from an averages standpoint, I want to see it from a game to game view. In order to do this, I have uploaded a new csv file that has both Gil and Sallói’s stats from each game over the season. I can use it to compare different impactful areas of the game and how our MVP contenders have performed from game to game.</p>
+<pre class="r"><code>mvp &lt;- read_csv(&quot;gil&amp;salloi2021.csv&quot;)</code></pre>
+<pre><code>## Rows: 52 Columns: 38</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (10): Player, Day, Comp, Round, Venue, Result, Squad, Opponent, Start, Pos
+## dbl (28): Game, Min, Gls, Ast, PK, PKatt, Sh, SoT, CrdY, CrdR, Touches, Pres...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>The stats that I decided to take a deeper look at are; goals, assists, touches, progressive passes, progressive carries, and successful dribbles. I will make a bump chart for each different statistic that has a line for each player. The line shows the statistic and where it aligns to each game for the season. I can see consistency, improvement, or even lack of success in terms of each statistic.</p>
+<pre class="r"><code>bump1 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Gls, color=Player))+
+  theme_cowplot()+
+  labs(title=&quot;Impact Is Key&quot;, subtitle=&quot;Is Salloi&#39;s consistency enough to take the spot, or is Gil&#39;s talent enough to out-do?&quot;,y=&quot;Goals&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump2 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Ast, color=Player))+
+  theme_cowplot()+
+  labs(y=&quot;Assists&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump3 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=Touches, color=Player))+
+  theme_cowplot()+
+  labs(color=&quot;&quot;,x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump4 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=ProgPasses, color=Player))+
+  theme_cowplot()+
+  labs(y=&quot;Progressive Passes&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump5 &lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=ProgCarries, color=Player))+
+  theme_cowplot()+
+  labs(y=&quot;Progressive Carries&quot;,color=&quot;&quot;,x=&quot;&quot;)</code></pre>
+<pre class="r"><code>bump6&lt;- ggplot() + geom_bump(data=mvp, aes(x=Game, y=SuccDribb, color=Player))+
+  theme_cowplot()+
+  labs(caption=&quot;Source: FBref.com | By Regan Vaccaro&quot;,y=&quot;Successful Dribbles&quot;,color=&quot;&quot;)</code></pre>
+<p>To see each bump chart next to each other, I placed it within a grid.</p>
+<pre class="r"><code>plot_grid(bump1, bump2, bump3, bump4, bump5, bump6, ncol=1)</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/10/25/carles-gil-or-daniel-salloi-who-is-the-better-pick-for-mls-mvp/index_files/figure-html/unnamed-chunk-18-1.png" width="480" />
+One of the big takeaways from this chart is the consistency that Dániel Sallói has displayed over the season this far. His charts have fewer bumps than Gil and he generally plays a similar game from one week to the next. On the other hand,Carles Gil has many games where his statistics are much higher than the next game. Overall, his statistics show him in a place of power above Sallói in terms of the amounts of successful dribbles, progressive carries, passes and touches.</p>
+<p>So. What does this mean in terms of MVP talk? It depends. Is consistency the more important factor, or do impactful statistics take the lead? It depends on how one looks at “value”. In many cases, value can be translated to consistency and addition to a team’s success.</p>
+<p>With this in mind, in the comparison of Dániel Sallói and Carles Gil as potential MLS MVPs, Dániel Sallói comes out on top. Sallói has scored more goals, played more full 90s, and has played a more consistent game all season long.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
