@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Is Nebraska the best 3 win team in college football? - Regan Vaccaro&#39;s GitHub Site</title>
+<meta property="og:title" content="Is Nebraska the best 3 win team in college football? - Regan Vaccaro&#39;s GitHub Site">
+
+
+  <link href='http://reganvaccaro.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/reganvaccaro">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/regan_vaccaro">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">Is Nebraska the best 3 win team in college football?</h1>
+
+    
+    <span class="article-date">2021-12-02</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="r"><code>library(tidyverse)
+library(cfbfastR)
+library(ggbump)</code></pre>
+<pre class="r"><code>yr &lt;- cfbfastR:::most_recent_season()
+pbp &lt;- cfbfastR::load_cfb_pbp(yr)</code></pre>
+<pre class="r"><code>team_info = cfbfastR::cfbd_team_info(year = yr)
+
+team_colors_logos = team_info %&gt;% 
+  select(school, abbreviation, color, logos, alt_color) %&gt;%
+  unnest(logos) %&gt;%
+  group_by(school) %&gt;%
+  slice(1) %&gt;% 
+  ungroup()</code></pre>
+<pre class="r"><code>nudrives &lt;- cfbd_drives(2021, team = &quot;Nebraska&quot;)</code></pre>
+<pre class="r"><code>nudrives &lt;- nudrives %&gt;% mutate(
+  chart_yards = case_when(
+  defense == &quot;Nebraska&quot; ~ as.numeric(yards)*-1,
+  defense != &quot;Nebraska&quot; ~ as.numeric(yards))) %&gt;% 
+  mutate(Opponent = case_when(
+  offense == &quot;Nebraska&quot; ~ defense,
+  defense == &quot;Nebraska&quot; ~ offense)) %&gt;% 
+  mutate(simple_drive_result = case_when(
+  drive_result == &quot;DOWNS&quot; ~ &quot;Bad&quot;,
+  drive_result == &quot;END OF 4TH QUARTER&quot; ~ &quot;Neutral&quot;,
+  drive_result == &quot;END OF GAME&quot; ~ &quot;Neutral&quot;,
+  drive_result == &quot;END OF HALF&quot; ~ &quot;Neutral&quot;,
+  drive_result == &quot;FG&quot; ~ &quot;Good&quot;,
+  drive_result == &quot;FUMBLE&quot; ~ &quot;Bad&quot;,
+  drive_result == &quot;FUMBLE TD&quot; ~ &quot;Disaster&quot;,
+  drive_result == &quot;INT&quot; ~ &quot;Bad&quot;,
+  drive_result == &quot;INT TD&quot; ~ &quot;Disaster&quot;,
+  drive_result == &quot;MISSED FG&quot; ~ &quot;Bad&quot;,
+  drive_result == &quot;PUNT&quot; ~ &quot;Bad&quot;,
+  drive_result == &quot;PUNT RETURN TD&quot; ~ &quot;Disaster&quot;,
+  drive_result == &quot;PUNT TD&quot; ~ &quot;Disaster&quot;,
+  drive_result == &quot;SF&quot; ~ &quot;Disaster&quot;,
+  drive_result == &quot;TD&quot; ~ &quot;Good&quot;))</code></pre>
+<pre class="r"><code>ggplot() + geom_bar(data=nudrives, aes(x=drive_number, weight=chart_yards, fill=simple_drive_result )) +
+  scale_fill_manual(values=c(&quot;red&quot;,&quot;mediumorchid4&quot;,&quot;darkgreen&quot;, &quot;gray&quot;))+
+  coord_flip() + scale_x_reverse() + facet_wrap(~Opponent)+
+  guides(fill=guide_legend(&quot;Drive Result&quot;))+
+  labs(x=&quot;Drive Number&quot;, y=&quot;Yards&quot;,
+       title=&quot;A Season Full of Good, Bad, &amp; Ugly&quot;,
+       subtitle=&quot;Nebraska&#39;s 2021 season was marked by self-destruction &amp; plenty of almost there moments.&quot;,
+       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=10),
+    panel.grid.minor = element_blank())</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-6-1.png" width="480" />
+Nebraska had a net point differential of 0.</p>
+<pre class="r"><code>ratings &lt;- cfbd_ratings_srs(year = 2021)
+records &lt;- cfbd_game_records(2021)
+ratingsvswins &lt;- records %&gt;% left_join(ratings, by=&quot;team&quot;)</code></pre>
+<pre class="r"><code>threewinteams &lt;- ratingsvswins %&gt;%
+  filter(total_wins == &quot;3&quot;)</code></pre>
+<pre class="r"><code>nebraska &lt;-ratingsvswins %&gt;%
+  filter(team == &quot;Nebraska&quot;)</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=ratingsvswins, aes(x=total_wins, y=rating)) +
+  geom_point(data=threewinteams, aes(x=total_wins, y=rating), color=&quot;blue&quot;)+
+  geom_point(data=nebraska, aes(x=total_wins, y=rating), color=&quot;red&quot;)+
+  geom_hline(yintercept = 7.25961800,color = &quot;red&quot;) +
+  scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
+labs(x=&quot;Amount of Wins&quot;, y=&quot;SRS&quot;,
+       title=&quot;Strength of Schedule&quot;,
+       subtitle=&quot;Nebraska really shouldn&#39;t just have 3 wins.&quot;,
+       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=10),
+    panel.grid.minor = element_blank(),
+    )</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="480" /></p>
+<pre class="r"><code>nebraskahomegames &lt;- cfbd_metrics_wp_pregame(
+  year = 2021,
+  team = &quot;Nebraska&quot;,
+  season_type = &quot;regular&quot;) %&gt;%
+  filter(home_team == &quot;Nebraska&quot;)</code></pre>
+<pre class="r"><code>nebraskaawaygames &lt;- cfbd_metrics_wp_pregame(
+  year = 2021,
+  team = &quot;Nebraska&quot;,
+  season_type = &quot;regular&quot;) %&gt;%
+  filter(away_team == &quot;Nebraska&quot;)</code></pre>
+<pre class="r"><code>nebraskagames &lt;- bind_rows(nebraskahomegames, nebraskaawaygames) %&gt;%
+  mutate(nebraska_win_prob = case_when(
+    away_team == &quot;Nebraska&quot; ~ away_win_prob,
+    home_team == &quot;Nebraska&quot; ~ home_win_prob )) %&gt;%
+  mutate(Outcome = case_when(
+    home_team == &quot;Illinois&quot; ~ &quot;L&quot;,
+    away_team == &quot;Fordham&quot; ~ &quot;W&quot;,
+    away_team == &quot;Buffalo&quot; ~ &quot;W&quot;,
+    home_team == &quot;Oklahoma&quot; ~ &quot;L&quot;,
+    home_team == &quot;Michigan State&quot; ~ &quot;L&quot;,
+    away_team == &quot;Northwestern&quot; ~ &quot;W&quot;,
+    away_team == &quot;Michigan&quot; ~ &quot;L&quot;,
+    home_team == &quot;Minnesota&quot; ~ &quot;L&quot;,
+    away_team == &quot;Purdue&quot; ~ &quot;L&quot;,
+    away_team == &quot;Ohio State&quot; ~ &quot;L&quot;,
+    home_team == &quot;Wisconsin&quot; ~ &quot;L&quot;,
+    away_team == &quot;Iowa&quot; ~ &quot;L&quot;))</code></pre>
+<pre class="r"><code>ggplot() + geom_step(data=nebraskagames, aes(x=week, y=nebraska_win_prob))+
+scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12,13))+
+geom_point(data=nebraskagames, aes(x=week, y=nebraska_win_prob,color = Outcome), size = 4)+
+scale_color_manual(values = c(&quot;red&quot;, &quot;darkgreen&quot;))+
+  labs(x=&quot;Week&quot;, y=&quot;Nebraska Win Probability&quot;,
+       title=&quot;Let&#39;s look at Nebraska&#39;s Win Probability Throughout The Season &quot;,
+       subtitle=&quot;Nebraska won three games, but should have won more.&quot;,
+       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 12, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    plot.subtitle = element_text(size=10),
+    panel.grid.minor = element_blank(),
+    )</code></pre>
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-14-1.png" width="480" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
