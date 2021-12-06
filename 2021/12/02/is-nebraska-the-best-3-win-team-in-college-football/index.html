@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">Is Nebraska the best 3 win team in college football?</h1>
@@ -76,9 +76,13 @@
 <script src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/header-attrs/header-attrs.js"></script>
 
 
+<p>Nebraska won 3 games this year. They should have won more.</p>
+<p>Even with such a disappointing record, the 2021 Nebraska football team competed shockingly well against their opponents. They are even being debated as one of the best 3-9 college football teams to ever play the game. Each game ended with a single digit point differential and the season’s record could have been drastically different with a difference of outcome for even a few plays. From losing to the Big Ten champs by a field goal, to the disappointing last quarter loss to Iowa, Nebraska’s season has been a truly exciting one.</p>
+<p>To find out if all of the hype around this football team if true, let’s look at some statistics. First I will start by uploading the necessary libraries to execute code.</p>
 <pre class="r"><code>library(tidyverse)
 library(cfbfastR)
 library(ggbump)</code></pre>
+<p>To see just how close Nebraska’s games were, let’s look at each individual drive of their 2021 season.</p>
 <pre class="r"><code>yr &lt;- cfbfastR:::most_recent_season()
 pbp &lt;- cfbfastR::load_cfb_pbp(yr)</code></pre>
 <pre class="r"><code>team_info = cfbfastR::cfbd_team_info(year = yr)
@@ -90,6 +94,7 @@ team_colors_logos = team_info %&gt;%
   slice(1) %&gt;% 
   ungroup()</code></pre>
 <pre class="r"><code>nudrives &lt;- cfbd_drives(2021, team = &quot;Nebraska&quot;)</code></pre>
+<p>Here I categorized each drive result into different categories based on the overall positivity of the drive. For instance, A touchdown would be categorized as “good” and a interception for a touchdown against them would be a “disaster”.</p>
 <pre class="r"><code>nudrives &lt;- nudrives %&gt;% mutate(
   chart_yards = case_when(
   defense == &quot;Nebraska&quot; ~ as.numeric(yards)*-1,
@@ -113,6 +118,7 @@ team_colors_logos = team_info %&gt;%
   drive_result == &quot;PUNT TD&quot; ~ &quot;Disaster&quot;,
   drive_result == &quot;SF&quot; ~ &quot;Disaster&quot;,
   drive_result == &quot;TD&quot; ~ &quot;Good&quot;))</code></pre>
+<p>Next, I made a series of graphs that looks at the positivity of each drive for each game of the 2021 season. Positive drives are marked as green and negative plays, red. Disastrous plays are purple and neutral are gray. The chart also shows the corresponding amount of yards that play was associated with. On the right side of the Y axis shows Nebraska’s plays and the left does the same with Nebraska’s opponent for each given game.</p>
 <pre class="r"><code>ggplot() + geom_bar(data=nudrives, aes(x=drive_number, weight=chart_yards, fill=simple_drive_result )) +
   scale_fill_manual(values=c(&quot;red&quot;,&quot;mediumorchid4&quot;,&quot;darkgreen&quot;, &quot;gray&quot;))+
   coord_flip() + scale_x_reverse() + facet_wrap(~Opponent)+
@@ -128,7 +134,9 @@ team_colors_logos = team_info %&gt;%
     plot.subtitle = element_text(size=10),
     panel.grid.minor = element_blank())</code></pre>
 <p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-6-1.png" width="960" />
-Nebraska had a net point differential of 0.</p>
+Nebraska ended their season having scored 314 points and only 244 points were scored against them. That left them with a +70 overall for the season. In Big Ten play, they had a +7 in points scores versus points allowed. The graphs above show these statistics very accurately. For their wins against Buffalo, Fordham, &amp; Northwestern, the graphs show mostly green. For every other game, it is a different story. For each good drive, it seemed like there was an equal and opposite drive in the opposing team’s favor. That doesn’t discount all of the good that Nebraska played in the season, however.The graph shows that Nebraska competed well, but had major problems in sealing the deal in the end.</p>
+<p>It’s understood that the Huskers played well, but how tough was the competition?
+Next, I want to look at the SRS (Simple Rating System) rating that takes into account a team’s average scoring margin as well as the strength of schedule. The higher the rating, the harder the schedule was along with point differential.</p>
 <pre class="r"><code>ratings &lt;- cfbd_ratings_srs(year = 2021)
 records &lt;- cfbd_game_records(2021)
 ratingsvswins &lt;- records %&gt;% left_join(ratings, by=&quot;team&quot;)</code></pre>
@@ -136,15 +144,16 @@ ratingsvswins &lt;- records %&gt;% left_join(ratings, by=&quot;team&quot;)</code
   filter(total_wins == &quot;3&quot;)</code></pre>
 <pre class="r"><code>nebraska &lt;-ratingsvswins %&gt;%
   filter(team == &quot;Nebraska&quot;)</code></pre>
+<p>To see if Nebraska was actually the best 3 win team, we will need to see the SRS of every 3 win college football team.</p>
 <pre class="r"><code>ggplot() + 
   geom_point(data=ratingsvswins, aes(x=total_wins, y=rating)) +
   geom_point(data=threewinteams, aes(x=total_wins, y=rating), color=&quot;blue&quot;)+
   geom_point(data=nebraska, aes(x=total_wins, y=rating), color=&quot;red&quot;)+
   geom_hline(yintercept = 7.25961800,color = &quot;red&quot;) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
-labs(x=&quot;Amount of Wins&quot;, y=&quot;SRS&quot;,
-       title=&quot;Strength of Schedule&quot;,
-       subtitle=&quot;Nebraska really shouldn&#39;t just have 3 wins.&quot;,
+labs(x=&quot;Amount of Wins&quot;, y=&quot;SRS Rating&quot;,
+       title=&quot;Nebraska Competed Well, Despite Hard Schedule&quot;,
+       subtitle=&quot;The Huskers had a higher SRS rating than all three, four, and five win teams.&quot;,
        caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
   theme_minimal() +
   theme(
@@ -153,7 +162,10 @@ labs(x=&quot;Amount of Wins&quot;, y=&quot;SRS&quot;,
     plot.subtitle = element_text(size=10),
     panel.grid.minor = element_blank(),
     )</code></pre>
-<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="960" /></p>
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="960" />
+From this chart, it can be seen that Nebraska had an SRS of 7.25 which is well above EVERY single 3 win team. That means that Nebraska had both a higher point differential and a much harder competition than each of their friends with only 3 wins. This data singlehandedly answers the question that Nebraska is the best 3 win football team in 2021.</p>
+<p>It does, however, bring up the idea that Nebraska should have won many more games than they did. This is because they have a higher rating than not only the 1,2, and 3 win teams, but also more than all 4,5, and most of 6 win teams. This should statistically put Nebraska’s record at an at least 6 or 7 win season.</p>
+<p>To prove this, we can look at Husker’s win probability throughout the season.</p>
 <pre class="r"><code>nebraskahomegames &lt;- cfbd_metrics_wp_pregame(
   year = 2021,
   team = &quot;Nebraska&quot;,
@@ -186,7 +198,7 @@ scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12,13))+
 geom_point(data=nebraskagames, aes(x=week, y=nebraska_win_prob,color = Outcome), size = 4)+
 scale_color_manual(values = c(&quot;red&quot;, &quot;darkgreen&quot;))+
   labs(x=&quot;Week&quot;, y=&quot;Nebraska Win Probability&quot;,
-       title=&quot;Let&#39;s look at Nebraska&#39;s Win Probability Throughout The Season &quot;,
+       title=&quot;Heartbreak Huskers &quot;,
        subtitle=&quot;Nebraska won three games, but should have won more.&quot;,
        caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
   theme_minimal() +
@@ -196,7 +208,9 @@ scale_color_manual(values = c(&quot;red&quot;, &quot;darkgreen&quot;))+
     plot.subtitle = element_text(size=10),
     panel.grid.minor = element_blank(),
     )</code></pre>
-<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-14-1.png" width="960" /></p>
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-14-1.png" width="960" />
+In the games that the Huskers won, they had a pre-game win probability of 75% or over, in other games Nebraska’s victory was less predictable but still favored in four of the other nine games. Had Nebraska won the other games in which they were favored to win, the season record would have been 7-5.</p>
+<p>Ultimately if you ask any Husker fan, I bet they would tell you that the 2021 football season didn’t feel like a 3 win season. In the end, it statistically shouldn’t have looked like one either. The Heartbreak Huskers may as well just be the new team name. It will be up to the 2022 team to change that narrative.</p>
 
     </div>
   </article>
