@@ -124,16 +124,16 @@ team_colors_logos = team_info %&gt;%
   coord_flip() + scale_x_reverse() + facet_wrap(~Opponent)+
   guides(fill=guide_legend(&quot;Drive Result&quot;))+
   labs(x=&quot;Drive Number&quot;, y=&quot;Yards&quot;,
-       title=&quot;A Season Full of Good, Bad, &amp; Ugly&quot;,
-       subtitle=&quot;Nebraska&#39;s 2021 season was marked by self-destruction &amp; plenty of almost there moments.&quot;,
-       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+    title=&quot;A Season Full of Good, Bad, &amp; Ugly&quot;,
+    subtitle=&quot;Nebraska&#39;s 2021 season was marked by self-destruction &amp; plenty of almost there moments.&quot;,
+    caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 20, face = &quot;bold&quot;),
     axis.title = element_text(size = 16),
     plot.subtitle = element_text(size=18),
     panel.grid.minor = element_blank())</code></pre>
-<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-6-1.png" width="1152" />
+<p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-6-1.png" width="1344" />
 Nebraska ended their season having scored 314 points and only 244 points were scored against them. That left them with a +70 overall for the season. In Big Ten play, they had a +7 in points scores versus points allowed. The graphs above show these statistics very accurately. For their wins against Buffalo, Fordham, &amp; Northwestern, the graphs show mostly green. For every other game, it is a different story. For each good drive, it seemed like there was an equal and opposite drive in the opposing team’s favor. That doesn’t discount all of the good that Nebraska played in the season, however.The graph shows that Nebraska competed well, but had major problems in sealing the deal in the end.</p>
 <p>It’s understood that the Huskers played well, but how tough was the competition?
 Next, I want to look at the SRS (Simple Rating System) rating that takes into account a team’s average scoring margin as well as the strength of schedule. The higher the rating, the harder the schedule was along with point differential.</p>
@@ -152,16 +152,15 @@ ratingsvswins &lt;- records %&gt;% left_join(ratings, by=&quot;team&quot;)</code
   geom_hline(yintercept = 7.25961800,color = &quot;red&quot;) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
 labs(x=&quot;Amount of Wins&quot;, y=&quot;SRS Rating&quot;,
-       title=&quot;Nebraska Competed Well, Despite Hard Schedule&quot;,
-       subtitle=&quot;The Huskers had a higher SRS rating than all three, four, and five win teams.&quot;,
-       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+    title=&quot;Nebraska Competed Well, Despite Hard Schedule&quot;,
+    subtitle=&quot;The Huskers had a higher SRS rating than all three, four, and five win teams.&quot;,
+    caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 20, face = &quot;bold&quot;),
     axis.title = element_text(size = 16),
     plot.subtitle = element_text(size=18),
-    panel.grid.minor = element_blank(),
-    )</code></pre>
+    panel.grid.minor = element_blank())</code></pre>
 <p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="960" />
 From this chart, it can be seen that Nebraska had an SRS of 7.25 which is well above EVERY single 3 win team. That means that Nebraska had both a higher point differential and a much harder competition than each of their friends with only 3 wins. This data singlehandedly answers the question that Nebraska is the best 3 win football team in 2021.</p>
 <p>It does, however, bring up the idea that Nebraska should have won many more games than they did. This is because they have a higher rating than not only the 1,2, and 3 win teams, but also more than all 4,5, and most of 6 win teams. This should statistically put Nebraska’s record at an at least 6 or 7 win season.</p>
@@ -198,16 +197,15 @@ scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12,13))+
 geom_point(data=nebraskagames, aes(x=week, y=nebraska_win_prob,color = Outcome), size = 4)+
 scale_color_manual(values = c(&quot;red&quot;, &quot;darkgreen&quot;))+
   labs(x=&quot;Week&quot;, y=&quot;Nebraska Win Probability&quot;,
-       title=&quot;Heartbreak Huskers &quot;,
-       subtitle=&quot;Nebraska won three games, but should have won more.&quot;,
-       caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
+    title=&quot;Heartbreak Huskers &quot;,
+    subtitle=&quot;Nebraska won three games, but should have won more.&quot;,
+    caption=&quot;Source: CfbfastR | By Regan Vaccaro&quot;) +
   theme_minimal() +
   theme(
     plot.title = element_text(size = 20, face = &quot;bold&quot;),
     axis.title = element_text(size = 16),
     plot.subtitle = element_text(size=18),
-    panel.grid.minor = element_blank(),
-    )</code></pre>
+    panel.grid.minor = element_blank())</code></pre>
 <p><img src="http://reganvaccaro.github.io/2021/12/02/is-nebraska-the-best-3-win-team-in-college-football/index_files/figure-html/unnamed-chunk-14-1.png" width="960" />
 In the games that the Huskers won, they had a pre-game win probability of 75% or over, in other games Nebraska’s victory was less predictable but still favored in four of the other nine games. Had Nebraska won the other games in which they were favored to win, the season record would have been 7-5.</p>
 <p>Ultimately if you ask any Husker fan, I bet they would tell you that the 2021 football season didn’t feel like a 3 win season. In the end, it statistically shouldn’t have looked like one either. The Heartbreak Huskers may as well just be the new team name. It will be up to the 2022 team to change that narrative.</p>
