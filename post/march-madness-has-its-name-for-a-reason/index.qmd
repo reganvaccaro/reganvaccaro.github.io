@@ -719,16 +719,20 @@ tournamentgames %>%
 Here, I have taken a deeper look at my west division of my bracket. Looking at things in depth, both of the teams that I predicted to win against their opponents, the model was fairly confident. The model was also accurate.Where things got tricky in my bracket was when the win confidence hovered around the 40 to 50 % margin. Almost all of these games, my model predicted incorrectly. This is truly unfortunate because had the coin been flipped, many of those games would have been predicted correctly.
 
 ```{r}
-library(ggplot2)
+team <- c("Kansas", "Arkansas", "Saint Mary's", "UConn", "TCU", "Gonzaga", "Northwestern", "UCLA")
+prediction <- c("Loss", "Loss", "Loss", "Loss", "Win", "Win", "Loss", "Loss")
+win_confidence <- c(0.3, 0.4, 0.4, 0.4, 0.6, 0.7, 0.4, 0.4  )
+opponent <- c("Howard", "Illinois", "VCU", "Iona", "Arizona St", "GCU", "Boise St", "UNCA")
 
-ggplot(table, aes(x = Team, y = Win_Confidence, fill = Prediction)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = Opponent), position = position_dodge(width = 1), vjust = -0.5) +
-  labs(x = "Team", y = "Win Confidence", title = "Win Confidence by Team and Opponent") +
-theme_bw() +
-  theme(axis.title.x = element_text(size = 12, face = "bold", color = "black"),
-        axis.title.y = element_text(size = 12, face = "bold", color = "black"))
+table <- data.frame(Team = team,
+                    Prediction = prediction,
+                    Win_Confidence = win_confidence,
+                    Opponent = opponent)
+table
+
 ```
+
+
 
 So why did this happen?
 
